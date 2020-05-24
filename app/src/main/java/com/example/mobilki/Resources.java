@@ -2,9 +2,8 @@ package com.example.mobilki;
 
 public class Resources {
 
-    private String processorName;
     private int processorCores;
-    private int processorFrequency;
+    private double processorFrequency;
     private long memory;
     private int battery;
     private boolean hasWifi;
@@ -12,8 +11,7 @@ public class Resources {
     private int uploadSpeed;
     private String network;
 
-    public Resources(String processorName, int processorCores, int processorFrequency, long memory, int battery, boolean hasWifi, int downloadSpeed, int uploadSpeed, String network) {
-        this.processorName = processorName;
+    public Resources(int processorCores, double processorFrequency, long memory, int battery, boolean hasWifi, int downloadSpeed, int uploadSpeed, String network) {
         this.processorCores = processorCores;
         this.processorFrequency = processorFrequency;
         this.memory = memory;
@@ -24,15 +22,11 @@ public class Resources {
         this.network = network;
     }
 
-    public String getProcessorName() {
-        return processorName;
-    }
-
     public int getProcessorCores() {
         return processorCores;
     }
 
-    public int getProcessorFrequency() {
+    public double getProcessorFrequency() {
         return processorFrequency;
     }
 

@@ -9,6 +9,7 @@ import android.os.BatteryManager;
 import android.telephony.TelephonyManager;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
@@ -24,19 +25,49 @@ public class ResourcesReader {
         this.context = context;
     }
 
-    private Resources readResources() {
-
+    public Resources readResources() {
 
         long memory = readTotalRam();
-        Map<String, String> cpuInfo = getCPUInfo();
+        int processorCores = getProcessorCores();
+        double processorFrequency = getProcessorFrequency();
         int battery = getBatteryLevel();
         String network = getNetwork();
         boolean hasWifi = hasWifi();
         int downloadSpeed = getDownloadSpeed();
         int uploadSpeed = getUploadSpeed();
 
-        Resources resources = new Resources(null, 0, 0, 0, 0, false, 0, 0, null);
-        return resources;
+        return new Resources(processorCores, processorFrequency, memory, battery, hasWifi, downloadSpeed, uploadSpeed, network);
+    }
+
+    private double getProcessorFrequency() {
+        double processorFrequency = 0;
+        try {
+            BufferedReader br = new BufferedReader (new FileReader("/proc/cpumaxfreq"));
+            String str = br.readLine();
+            processorFrequency = Double.parseDouble(str);
+            br.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return processorFrequency;
+    }
+
+    private int getProcessorCores() {
+        int processorCores = 0;
+        try {
+            BufferedReader br = new BufferedReader (new FileReader("/proc/cpuinfo"));
+            String str;
+
+            while ((str = br.readLine ()) != null) {
+                if (str.contains("processor")) {
+                    processorCores++;
+                }
+            }
+            br.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return processorCores;
     }
 
     private int getUploadSpeed() {
@@ -89,27 +120,6 @@ public class ResourcesReader {
             return bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
         }
         return 0;
-    }
-
-    private static Map<String, String> getCPUInfo() {
-        Map<String, String> output = new HashMap<>();
-        try {
-            BufferedReader br = new BufferedReader (new FileReader("/proc/cpuinfo"));
-            String str;
-
-            while ((str = br.readLine ()) != null) {
-                String[] data = str.split (":");
-                if (data.length > 1) {
-                    String key = data[0].trim ().replace (" ", "_");
-                    if (key.equals ("model_name")) key = "cpu_model";
-                    output.put (key, data[1].trim ());
-                }
-            }
-            br.close();
-        } catch (IOException exc) {
-            exc.printStackTrace();
-        }
-        return output;
     }
 
     private long readTotalRam() {
