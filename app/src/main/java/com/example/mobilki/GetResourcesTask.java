@@ -2,7 +2,9 @@ package com.example.mobilki;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Environment;
 
+import java.io.File;
 import java.lang.ref.WeakReference;
 
 public class GetResourcesTask extends AsyncTask<Void, Void, Resources> {
@@ -32,5 +34,8 @@ public class GetResourcesTask extends AsyncTask<Void, Void, Resources> {
         activity.hasWifiEditText.setText(String.valueOf(resources.isHasWifi()));
         activity.downloadSpeedEditText.setText(String.valueOf(resources.getDownloadSpeed()));
         activity.uploadSpeedEditText.setText(String.valueOf(resources.getUploadSpeed()));
+
+        Converter converter = new Converter(context, activity);
+        converter.convert();
     }
 }
