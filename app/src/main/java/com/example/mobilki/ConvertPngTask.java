@@ -2,19 +2,21 @@ package com.example.mobilki;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.os.Environment;
+import android.widget.Toast;
 
-import java.io.File;
 import java.lang.ref.WeakReference;
+import java.util.Random;
 
-public class GetResourcesTask extends AsyncTask<Void, Void, Resources> {
+public class ConvertPngTask extends AsyncTask<Void, Void, Resources> {
 
     private final WeakReference<MainActivity> sActivity;
     private Context context;
+    private String filePath;
 
-    public GetResourcesTask(MainActivity activity) {
+    public ConvertPngTask(MainActivity activity, String filePath) {
         this.sActivity = new WeakReference<>(activity);
         this.context = activity.getApplicationContext();
+        this.filePath = filePath;
     }
 
     @Override
@@ -35,7 +37,16 @@ public class GetResourcesTask extends AsyncTask<Void, Void, Resources> {
         activity.downloadSpeedEditText.setText(String.valueOf(resources.getDownloadSpeed()));
         activity.uploadSpeedEditText.setText(String.valueOf(resources.getUploadSpeed()));
 
-        Converter converter = new Converter(context, activity);
-        converter.convert();
+        Random random = new Random();
+        boolean convertLocally = random.nextBoolean();
+        //TODO decision based on model - resources
+
+        if(convertLocally) {
+            new Converter().convertImage(filePath);
+            Toast.makeText(activity, "Converted image locally",  Toast.LENGTH_LONG).show();
+        } else {
+            new RequestSender().uploadFile(filePath);
+            Toast.makeText(activity, "Converted image remotely",  Toast.LENGTH_LONG).show();
+        }
     }
 }
