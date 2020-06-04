@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
+import java.util.Random;
 
 public class ConvertPngTask extends AsyncTask<Void, Void, Resources> {
 
@@ -36,10 +37,12 @@ public class ConvertPngTask extends AsyncTask<Void, Void, Resources> {
         activity.downloadSpeedEditText.setText(String.valueOf(resources.getDownloadSpeed()));
         activity.uploadSpeedEditText.setText(String.valueOf(resources.getUploadSpeed()));
 
-        ImageModel model = activity.getModel();
+//        ImageModel model = activity.getModel();
         boolean converted = false;
         long startTime = System.nanoTime();
-        ImageModel.Execution mode = model.classify(filePath, resources);
+//        ImageModel.Execution mode = model.classify(filePath, resources);
+        Random random = new Random();
+        ImageModel.Execution mode = ImageModel.Execution.values()[random.nextInt(2)];
         switch (mode) {
             case LOCAL:
                 converted = new Converter().convertImage(filePath);
