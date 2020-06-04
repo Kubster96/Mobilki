@@ -1,9 +1,7 @@
 package com.example.mobilki;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -11,9 +9,21 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+
+import org.pytorch.Module;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,11 +39,24 @@ public class MainActivity extends AppCompatActivity {
     EditText downloadSpeedEditText;
     EditText uploadSpeedEditText;
     private Button getResourcesButton;
+    private ImageModel model;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (model == null) {
+            try {
+                model = new ImageModel(
+                        Module.load(assetFilePath(this, "model.pt"))
+                );
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.e("ModelLoad", "Error reading assets", e);
+
+                finish();
+            }
+        }
         setContentView(R.layout.activity_main);
 
         processorCoresEditText = findViewById(R.id.processorCoresEditText);
@@ -52,6 +75,11 @@ public class MainActivity extends AppCompatActivity {
                 askForPermissionAndShowChooser();
             }
         });
+
+    }
+
+    public ImageModel getModel() {
+        return model;
     }
 
     private void askForPermissionAndShowChooser() {
@@ -101,5 +129,29 @@ public class MainActivity extends AppCompatActivity {
         }
         cursor.close();
         return filePath;
+    }
+
+    /**
+     * Copies specified asset to the file in /files app directory and returns this file absolute path.
+     *
+     * @return absolute file path
+     */
+    public static String assetFilePath(Context context, String assetName) throws IOException {
+        File file = new File(context.getFilesDir(), assetName);
+        if (file.exists() && file.length() > 0) {
+            return file.getAbsolutePath();
+        }
+
+        try (InputStream is = context.getAssets().open(assetName)) {
+            try (OutputStream os = new FileOutputStream(file)) {
+                byte[] buffer = new byte[4 * 1024];
+                int read;
+                while ((read = is.read(buffer)) != -1) {
+                    os.write(buffer, 0, read);
+                }
+                os.flush();
+            }
+            return file.getAbsolutePath();
+        }
     }
 }

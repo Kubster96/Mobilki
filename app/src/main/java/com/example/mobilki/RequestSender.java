@@ -17,6 +17,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RequestSender {
 
@@ -50,6 +51,26 @@ public class RequestSender {
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
 
+            }
+        });
+    }
+
+
+    public void updateModel(InferenceResult result) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(URL_STRING)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        MLService service = retrofit.create(MLService.class);
+        service.updateModel(result).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                System.out.println("yaaay");
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                System.out.println("ooooops");
             }
         });
     }

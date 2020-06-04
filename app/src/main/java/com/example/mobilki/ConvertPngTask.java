@@ -5,7 +5,6 @@ import android.os.AsyncTask;
 import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
-import java.util.Random;
 
 public class ConvertPngTask extends AsyncTask<Void, Void, Resources> {
 
@@ -37,16 +36,29 @@ public class ConvertPngTask extends AsyncTask<Void, Void, Resources> {
         activity.downloadSpeedEditText.setText(String.valueOf(resources.getDownloadSpeed()));
         activity.uploadSpeedEditText.setText(String.valueOf(resources.getUploadSpeed()));
 
-        Random random = new Random();
-        boolean convertLocally = random.nextBoolean();
-        //TODO decision based on model - resources
+        ImageModel model = activity.getModel();
+        boolean converted = false;
+        long startTime = System.nanoTime();
+        ImageModel.Execution mode = model.classify(filePath, resources);
+        switch (mode) {
+            case LOCAL:
+                converted = new Converter().convertImage(filePath);
+                Toast.makeText(activity, "Converted image locally", Toast.LENGTH_LONG).show();
+                break;
+            case CLOUD:
+                new RequestSender().uploadFile(filePath);
+                Toast.makeText(activity, "Converted image remotely", Toast.LENGTH_LONG).show();
+        }
+        long endTime = System.nanoTime();
 
-        if(convertLocally) {
-            new Converter().convertImage(filePath);
-            Toast.makeText(activity, "Converted image locally",  Toast.LENGTH_LONG).show();
-        } else {
-            new RequestSender().uploadFile(filePath);
-            Toast.makeText(activity, "Converted image remotely",  Toast.LENGTH_LONG).show();
+        if (converted) {
+            long timeElapsedMillis = (endTime - startTime) / 1_000_000;
+            InferenceResult result = new InferenceResult(
+                    TensorUtils.prepareInput(filePath, resources),
+                    (float) timeElapsedMillis,
+                    mode.ordinal()
+            );
+            new RequestSender().updateModel(result);
         }
     }
 }
