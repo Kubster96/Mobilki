@@ -21,9 +21,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RequestSender {
 
-    private String URL_STRING = "http://192.168.1.118:5000";
+    private String URL_STRING = "http://192.168.43.169:5000";
 
-    public void uploadFile(final String filePath) {
+    public void uploadFile(final String filePath, final String directoryPath) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(URL_STRING)
                 .build();
@@ -37,10 +37,9 @@ public class RequestSender {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 try {
-                    String path = Environment.getExternalStorageDirectory().getAbsolutePath();
                     File file = new File(filePath);
                     String fileName = FilenameUtils.removeExtension(file.getName());
-                    File convertedImage = new File(path + "/" + fileName + "_converted.jpg");
+                    File convertedImage = new File(directoryPath + "/" + fileName + "_converted.jpg");
                     FileOutputStream fileOutputStream = new FileOutputStream(convertedImage);
                     IOUtils.write(response.body().bytes(), fileOutputStream);
                 } catch (IOException e) {

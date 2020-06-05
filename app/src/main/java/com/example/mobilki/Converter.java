@@ -14,14 +14,13 @@ import org.apache.commons.io.FilenameUtils;
 
 public class Converter {
 
-    public boolean convertImage(String filePath){
+    public boolean convertImage(String filePath, String directoryPath){
         boolean success;
         try {
             File file = new File(filePath);
             String fileName = FilenameUtils.removeExtension(file.getName());
             Bitmap bmp = BitmapFactory.decodeFile(filePath);
-            String path = Environment.getExternalStorageDirectory().getAbsolutePath();
-            File convertedImage = new File(path + "/" + fileName + "_converted.jpg");
+            File convertedImage = new File(directoryPath + "/" + fileName + "_converted.jpg");
             convertedImage.createNewFile();
             FileOutputStream outStream = new FileOutputStream(convertedImage);
             success = bmp.compress(Bitmap.CompressFormat.PNG, 100, outStream);
