@@ -32,29 +32,32 @@ public class ConvertPngsTask extends AsyncTask<Void, Void, Void> {
                     String filePath = file.getAbsolutePath();
 
 //                  ImageModel model = mainActivity.getModel();
-                    boolean converted = false;
-                    long startTime = System.nanoTime();
 //                  ImageModel.Execution mode = model.classify(filePath, resources);
                     Random random = new Random();
                     ImageModel.Execution mode = ImageModel.Execution.values()[random.nextInt(2)];
                     switch (mode) {
                         case LOCAL:
-                            converted = new Converter().convertImage(filePath, directoryPath, iteration);
+                            long startTime = System.nanoTime();
+                            boolean converted = new Converter().convertImage(filePath, directoryPath);
+
+                            if (converted) {
+
+                                long endTime = System.nanoTime();
+
+                                long timeElapsedMillis = (endTime - startTime) / 1_000_000;
+                                InferenceResult result = new InferenceResult(
+                                        TensorUtils.prepareInput(filePath, resources),
+                                        (float) timeElapsedMillis,
+                                        ImageModel.Execution.LOCAL.ordinal()
+                                );
+                                new RequestSender().updateModel(result);
+                            }
                             break;
                         case CLOUD:
-                            new RequestSender().uploadFile(filePath, directoryPath, iteration);
+                            new RequestSender().uploadFile(filePath, directoryPath, resources);
                     }
-                    long endTime = System.nanoTime();
 
-                    if (converted) {
-                        long timeElapsedMillis = (endTime - startTime) / 1_000_000;
-                        InferenceResult result = new InferenceResult(
-                                TensorUtils.prepareInput(filePath, resources),
-                                (float) timeElapsedMillis,
-                                mode.ordinal()
-                        );
-                        new RequestSender().updateModel(result);
-                    }
+
                 }
             }
         }
