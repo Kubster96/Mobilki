@@ -38,7 +38,7 @@ public class ConvertPngsTask extends AsyncTask<Void, Void, Void> {
                     switch (mode) {
                         case LOCAL:
                             long startTime = System.nanoTime();
-                            boolean converted = new Converter().convertImage(filePath, directoryPath);
+                            boolean converted = new Converter().convertImage(filePath, directoryPath, iteration);
 
                             if (converted) {
 
@@ -54,7 +54,7 @@ public class ConvertPngsTask extends AsyncTask<Void, Void, Void> {
                             }
                             break;
                         case CLOUD:
-                            new RequestSender().uploadFile(filePath, directoryPath, resources);
+                            new RequestSender().uploadFile(filePath, directoryPath, iteration, resources);
                     }
 
 

@@ -21,8 +21,7 @@ public class RequestSender {
 
     private String URL_STRING = "http://192.168.43.169:5000";
 
-    public void uploadFile(final String filePath, final String directoryPath, final int iteration) {
-    public void uploadFile(final String filePath, final String directoryPath, Resources resources) {
+    public void uploadFile(final String filePath, final String directoryPath, final int iteration, Resources resources) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(URL_STRING)
                 .build();
