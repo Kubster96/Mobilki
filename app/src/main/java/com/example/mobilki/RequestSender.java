@@ -23,7 +23,7 @@ public class RequestSender {
 
     private String URL_STRING = "http://192.168.43.169:5000";
 
-    public void uploadFile(final String filePath, final String directoryPath) {
+    public void uploadFile(final String filePath, final String directoryPath, final int iteration) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(URL_STRING)
                 .build();
@@ -39,7 +39,7 @@ public class RequestSender {
                 try {
                     File file = new File(filePath);
                     String fileName = FilenameUtils.removeExtension(file.getName());
-                    File convertedImage = new File(directoryPath + "/" + fileName + "_converted.jpg");
+                    File convertedImage = new File(directoryPath + "/" + fileName + "_" + iteration + "_converted.jpg");
                     FileOutputStream fileOutputStream = new FileOutputStream(convertedImage);
                     IOUtils.write(response.body().bytes(), fileOutputStream);
                 } catch (IOException e) {

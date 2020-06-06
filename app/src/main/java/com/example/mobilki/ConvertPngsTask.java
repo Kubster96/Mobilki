@@ -24,7 +24,7 @@ public class ConvertPngsTask extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... voids) {
-        for(int i = 0; i<iterations; i++) {
+        for(int iteration = 0; iteration<iterations; iteration++) {
             for(File file: files) {
                 if (file.getName().toLowerCase().endsWith(".png")) {
                     ResourcesReader resourcesReader = new ResourcesReader(this.context);
@@ -39,10 +39,10 @@ public class ConvertPngsTask extends AsyncTask<Void, Void, Void> {
                     ImageModel.Execution mode = ImageModel.Execution.values()[random.nextInt(2)];
                     switch (mode) {
                         case LOCAL:
-                            converted = new Converter().convertImage(filePath, directoryPath);
+                            converted = new Converter().convertImage(filePath, directoryPath, iteration);
                             break;
                         case CLOUD:
-                            new RequestSender().uploadFile(filePath, directoryPath);
+                            new RequestSender().uploadFile(filePath, directoryPath, iteration);
                     }
                     long endTime = System.nanoTime();
 
