@@ -2,7 +2,6 @@ package com.example.mobilki;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Environment;
 
 
 import java.io.File;
@@ -20,7 +19,7 @@ public class Converter {
             File file = new File(filePath);
             String fileName = FilenameUtils.removeExtension(file.getName());
             Bitmap bmp = BitmapFactory.decodeFile(filePath);
-            File convertedImage = new File(directoryPath + "/" + fileName + "_" + iteration + "_converted.jpg");
+            File convertedImage = new File(directoryPath + "/" + fileName + "_converted.jpg");
             convertedImage.createNewFile();
             FileOutputStream outStream = new FileOutputStream(convertedImage);
             success = bmp.compress(Bitmap.CompressFormat.PNG, 100, outStream);

@@ -2,6 +2,7 @@ package com.example.mobilki;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import java.io.File;
 import java.util.Random;
@@ -35,6 +36,8 @@ public class ConvertPngsTask extends AsyncTask<Void, Void, Void> {
 //                  ImageModel.Execution mode = model.classify(filePath, resources);
                     Random random = new Random();
                     ImageModel.Execution mode = ImageModel.Execution.values()[random.nextInt(2)];
+                    Log.i("convertImage", file.getName());
+                    Log.i("place", mode.toString());
                     switch (mode) {
                         case LOCAL:
                             long startTime = System.nanoTime();
