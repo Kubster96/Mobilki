@@ -5,6 +5,7 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
+
 import java.io.IOException;
 
 import okhttp3.MediaType;
@@ -18,7 +19,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RequestSender {
 
-    private String URL_STRING = "http://34.66.197.154:5000";
+    private String URL_STRING = "http://35.234.97.92:5000";
 
     public void uploadFile(final String filePath, final String directoryPath, final int iteration, Resources resources) {
         Retrofit retrofit = new Retrofit.Builder()
