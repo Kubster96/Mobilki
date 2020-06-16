@@ -28,6 +28,7 @@ public class TensorUtils {
         int downloadSpeed = resources.getDownloadSpeed() / 1_000;
         int uploadSpeed = resources.getUploadSpeed() / 1_000;
         long fileSize = new File(filePath).length();
+        fileSize = (long) Math.sqrt(fileSize / 3);
 
         return new float[]{processorCores, (float) processorFrequency, battery, memory, downloadSpeed, uploadSpeed, fileSize};
     }

@@ -41,7 +41,9 @@ public class ConvertPngsTask extends AsyncTask<Void, Void, Void> {
                     switch (mode) {
                         case LOCAL:
                             long startTime = System.nanoTime();
-                            boolean converted = new Converter().convertImage(filePath, directoryPath, iteration);
+                            boolean converted = false;
+                            for (int i = 0; i < 10; i++)
+                                converted = new Converter().convertImage(filePath, directoryPath, iteration);
 
                             if (converted) {
 
