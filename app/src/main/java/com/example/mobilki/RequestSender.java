@@ -32,7 +32,6 @@ public class RequestSender {
         final long startTime = System.nanoTime();
         final Resources finalResources = resources;
 
-
         Call<ResponseBody> callSync = service.calc(filePart);
         try
         {

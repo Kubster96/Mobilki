@@ -100,8 +100,6 @@ public class MainActivity extends AppCompatActivity {
             File directory = new File(folderLocation);
             File[] files = directory.listFiles();
             int iterations = Integer.parseInt(iterationsEditText.getText().toString());
-
-
             new ConvertPngsTask(this, files, iterations, folderLocation).execute();
 
         }
